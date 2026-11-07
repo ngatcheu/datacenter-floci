@@ -1,0 +1,27 @@
+# Fichier géré par Ansible (floci-playbook.yml) — ne pas modifier à la main.
+services:
+  floci:
+    image: floci/floci:{{ floci_version }}
+    container_name: floci
+    restart: unless-stopped
+    # root : accès au socket Docker (Lambda, RDS, ElastiCache, EKS et la console
+    # sont des conteneurs frères lancés par Floci sur l'hôte).
+    user: root
+    ports:
+      - "{{ floci_port }}:4566"
+    environment:
+      FLOCI_BASE_URL: "{{ floci_base_url }}"
+      FLOCI_DEFAULT_REGION: "{{ floci_region }}"
+      FLOCI_STORAGE_MODE: "{{ floci_storage_mode }}"
+      FLOCI_STORAGE_PERSISTENT_PATH: /var/lib/floci
+      FLOCI_SERVICES_LAMBDA_DOCKER_NETWORK: floci
+      FLOCI_SERVICES_UI_PORT: "{{ floci_ui_port }}"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - {{ floci_base_dir }}/data:/var/lib/floci
+    networks:
+      - floci
+
+networks:
+  floci:
+    name: floci

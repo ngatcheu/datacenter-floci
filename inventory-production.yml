@@ -1,0 +1,9 @@
+---
+all:
+  children:
+    floci_servers:
+      vars:
+        ansible_user: root
+      hosts:
+        standalone-1:
+          ansible_host: 192.168.1.120  # VM terragrunt_cluster_kubernetes/live/production/standalone
